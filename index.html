@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: monospace;
+            background-color: #171717;
+            color: #AAAAAA;
+            padding: 20px;
+            font-size: 18px;
+            user-select: none;
+        }
+
+        pre {
+            white-space: pre-wrap;
+        }
+
+        .ascii-art {
+            font-family: monospace;
+            font-size: 18px;
+        }
+        
+        .text-container {
+            display: flex;
+        }
+        
+        .text-symbol {
+            margin-right: 5px; /* Adjust the spacing as desired */
+            align-self: center;
+        }
+        
+        .text-box {
+            border: none;
+            background: none;
+            outline: none;
+            font-family: inherit;
+            background-color: inherit;
+            color: #F0BF81;
+            padding: inherit;
+            font-size: inherit;
+            width: 100vw;
+            cursor: default;
+        }
+        .text-box::selection {a
+            background-color: #AAAAAA;
+            color: #171717;
+        }
+        .error-message {
+        color: #ff0000;
+    }
+    .help-message {
+        color: inherit;
+    }
+    </style>
+</head>
+<body>
+    <pre class="ascii-art">
+   _____ ___  _____ ____  ____  _____  ____  _  _   _  ______  _____  
+  / ____/ _ \|  __ \___ \|  _ \|  __ \|___ \| || | | |/ /___ \|  __ \ 
+ | |   | | | | |  | |__) | |_) | |__) | __) | || |_| ' /  __) | |__) |
+ | |   | | | | |  | |__ <|  _ <|  _  / |__ <|__   _|  <  |__ <|  _  / 
+ | |___| |_| | |__| |__) | |_) | | \ \ ___) |  | | | . \ ___) | | \ \ 
+  \_____\___/|_____/____/|____/|_|  \_\____/   |_| |_|\_\____/|_|  \_\
+    </pre>
+    <div class="text-line">Welcome to C0MM4ND0! In here you can access secret websites (shh).</div>
+    <br>
+    <div class="text-line">Type 'help' to view a list of available commands.</div>
+    <br>
+    <div id="text-boxes-container"></div> <!-- New container for text boxes -->
+
+    <script>
+        // List of commands
+        var commands = [
+            { name: "List of commands:", description: "" },
+            { name: "about", description: "- Shows information about the site." },
+            { name: "games", description: "- Shows a list of browser games." },
+            { name: "unblockers", description: "- Shows a list of website unblockers." }
+            // Add more commands here
+        ];
+
+        document.onclick = function() {
+            focusTextBox();
+        };
+
+        function focusTextBox() {
+            const textboxes = document.querySelectorAll('.text-box');
+            const lastTextbox = textboxes[textboxes.length - 1];
+            lastTextbox.focus();
+        }
+
+        function handleKeyPress(event) {
+    if (event.key === "Enter") {
+        const input = event.target.value;
+        event.preventDefault(); // Prevent form submission
+
+        if (input.trim() !== "") {
+            if (input.toLowerCase() === "help") {
+                showCommands();
+            } else if (input.toLowerCase() === "games") {
+                showGames();
+            } else if (input.toLowerCase() === "unblockers") {
+                showUnblockers();
+            } else {
+                displayErrorMessage(input); // New function to handle invalid commands
+            }
+            event.target.disabled = true; // Disable the previous text box
+        }
+    }
+}
+
+function displayErrorMessage(command) {
+    const textBoxesContainer = document.getElementById('text-boxes-container');
+    const errorMessage = document.createElement('div');
+    errorMessage.className = 'error-message';
+    errorMessage.innerText = `command not found: ${command}.`;
+
+    const helpMessage = document.createElement('div');
+    helpMessage.className = 'help-message';
+    helpMessage.innerText = "Type 'help' to view a list of available commands.";
+
+    textBoxesContainer.appendChild(errorMessage);
+
+    if (command.toLowerCase() !== "help") {
+        textBoxesContainer.appendChild(helpMessage);
+    }
+
+    textBoxesContainer.appendChild(document.createElement("br")); // Add <br> tag
+    createTextBox();
+}
+
+
+
+
+        function createTextBox(previousInput) {
+            const textBoxesContainer = document.getElementById('text-boxes-container');
+            const newTextBoxContainer = document.createElement('div');
+            newTextBoxContainer.className = "text-container";
+
+            const textSymbol = document.createElement('span');
+            textSymbol.className = "text-symbol";
+            textSymbol.innerText = ">";
+
+            const newTextBox = document.createElement('input');
+            newTextBox.type = "text";
+            newTextBox.className = "text-box";
+            newTextBox.spellcheck = "false";
+            newTextBox.onkeydown = handleKeyPress;
+
+            if (previousInput) {
+                newTextBox.placeholder = "";
+            }
+
+            newTextBoxContainer.appendChild(textSymbol);
+            newTextBoxContainer.appendChild(newTextBox);
+            textBoxesContainer.appendChild(newTextBoxContainer);
+            textBoxesContainer.appendChild(document.createElement("br")); // Add <br> tag
+            focusTextBox(); // Focus on the new textbox
+        }
+
+        function showCommands() {
+            const textBoxesContainer = document.getElementById('text-boxes-container');
+            const commandsList = document.createElement('ul');
+            commandsList.className = "commands-list";
+            commandsList.style.listStyleType = "none"; // Remove bullet point dots
+
+            commands.forEach(function(command) {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `<div>${command.name}</div><div style="margin-bottom: 10px; margin-left: 25px;">${command.description}</div>`;
+                commandsList.appendChild(listItem);
+            });
+
+            textBoxesContainer.appendChild(commandsList);
+            textBoxesContainer.appendChild(document.createElement("br")); // Add <br> tag
+            createTextBox();
+        }
+
+        function showGames() {
+            const textBoxesContainer = document.getElementById('text-boxes-container');
+            const gamesList = document.createElement('ul');
+            gamesList.className = "games-list";
+            gamesList.style.listStyleType = "none"; // Remove bullet point dots
+
+            const games = [
+                { name: "List of browser games:", description: "- game 1" },
+                { name: "", description: "- game 2" },
+                { name: "", description: "- game 3..." }
+                // Add more games here
+            ];
+
+            games.forEach(function(game) {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `<div>${game.name}</div><div style="margin-bottom: 10px; margin-left: 25px;">${game.description}</div>`;
+                gamesList.appendChild(listItem);
+            });
+
+            textBoxesContainer.appendChild(gamesList);
+            textBoxesContainer.appendChild(document.createElement("br")); // Add <br> tag
+            createTextBox();
+        }
+
+        function showUnblockers() {
+            const textBoxesContainer = document.getElementById('text-boxes-container');
+            const unblockersList = document.createElement('ul');
+            unblockersList.className = "unblockers-list";
+            unblockersList.style.listStyleType = "none"; // Remove bullet point dots
+
+            const unblockers = [
+                { name: "List of website unblockers:", description: "- blockaway.net" },
+                { name: "", description: "- homeworkistrash.ml" },
+                { name: "", description: "- croxyproxy.com" }
+                // Add more unblockers here
+            ];
+
+            unblockers.forEach(function(unblocker) {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `<div>${unblocker.name}</div><div style="margin-bottom: 10px; margin-left: 25px;">${unblocker.description}</div>`;
+                unblockersList.appendChild(listItem);
+            });
+
+            textBoxesContainer.appendChild(unblockersList);
+            textBoxesContainer.appendChild(document.createElement("br")); // Add <br> tag
+            createTextBox();
+        }
+
+        // Initial setup
+        createTextBox();
+    </script>
+</body>
+</html>
